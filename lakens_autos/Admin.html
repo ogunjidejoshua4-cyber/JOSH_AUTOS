@@ -376,6 +376,10 @@
             margin-top: auto;
         }
 
+        .car-footer a {
+            text-decoration: none;
+        }
+
         .btn-view {
             flex: 1;
             padding: 0.75rem;
@@ -507,7 +511,18 @@
             <li><a href="./about.html">About</a></li>
             <li><a href="./contact.html">Contact</a></li>
         </ul>
-        <a href="#" class="nav-cta">Admin</a>
+        <div id="navUser" style="position: relative; display: flex; align-items: center;">
+            <div onclick="toggleMenu()" style="cursor: pointer; display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-user-circle" style="font-size:1.5rem; color: var(--accent);"></i>
+                <span id="adminName" style="font-weight:600;"></span>
+                <i class="fas fa-chevron-down" style="font-size:0.8rem;"></i>
+            </div>
+
+            <div id="dropdown"
+                style="display:none; position:absolute; top:45px; right:0; background:#1a1a1a;  border:1px solid var(--border);  border-radius:10px; overflow:hidden; min-width:150px;  box-shadow:0 10px 30px rgba(0,0,0,0.4);">
+                <button onclick="logout()" style="width:100%; padding:10px; background:none; border:none; color:white; text-align:left;cursor:pointer;">Logout</button>
+            </div>
+        </div>
     </nav>
 
     <header class="page-header">
@@ -623,8 +638,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+
         // import { getDoc, doc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -644,7 +660,6 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                // Not logged in
                 window.location.href = "./Admin_login.html";
                 return;
             }
@@ -654,12 +669,29 @@
                 const adminSnap = await getDoc(adminRef);
 
                 if (!adminSnap.exists()) {
-                    // Logged in BUT not admin
                     alert("You are not authorized to access admin dashboard");
                     window.location.href = "../index.html";
                     return;
                 }
 
+
+                // ✅ SHOW ADMIN NAME
+                let adminData = adminSnap.data();
+
+                let displayName = adminData.firstName || adminData.username;
+
+                if (!displayName) {
+                    const userRef = doc(db, "users", user.uid);
+                    const userSnap = await getDoc(userRef);
+
+                    if (userSnap.exists()) {
+                        const userData = userSnap.data();
+                        displayName = userData.firstName || userData.username;
+                    }
+                }
+
+                document.getElementById("adminName").textContent =
+                    displayName || "Admin";
                 // ✅ This is a real admin
                 loadAdminCars();
 
@@ -667,6 +699,47 @@
                 console.error(err);
             }
         });
+
+
+        window.toggleMenu = function() {
+            const dropdown = document.getElementById("dropdown");
+            dropdown.style.display =
+                dropdown.style.display === "block" ? "none" : "block";
+        }
+
+        window.logout = function() {
+            signOut(auth)
+                .then(() => {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Logged out",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    setTimeout(() => {
+                        window.location.href = "../index.html";
+                    }, 1500);
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Logout Failed",
+                        text: err.message,
+                        timer: 2000
+                    });
+                });
+        }
+
+        document.addEventListener("click", (e) => {
+    const dropdown = document.getElementById("dropdown");
+    const navUser = document.getElementById("navUser");
+
+    if (!navUser.contains(e.target)) {
+        dropdown.style.display = "none";
+    }
+});
 
 
         const uploadBtn = document.getElementById("uploadBtn");
@@ -773,10 +846,12 @@
                                 </div>
                             </div>
                             <div class="car-footer">
+                                <a  href="#" onclick="viewCar('${id}')"">
                                 <button class="btn-view">
                                     <i class="fas fa-eye"></i>
                                     View Details
                                 </button>
+                                </a>
                                 <button class="btn-edit" onclick="editCar('${id}', '${car.name}', '${car.price}', '${car.image[0]}', '${car.description}')">
                                     Edit
                                 </button>
@@ -790,6 +865,11 @@
                 `;
             });
         }
+
+        window.viewCar = (id) => {
+            localStorage.setItem("selectedCarId", id);
+            window.location.href = "car-details.html";
+        };
 
         window.deleteCar = async (id) => {
             const confirmDelete = confirm("Are you sure you want to delete this car?");
@@ -806,56 +886,63 @@
             }
         };
 
-        window.editCar = async (id, oldName, oldPrice, oldImage, oldDesc) => {
+        window.editCar = async (id, oldName, oldPrice, oldImages, oldDesc) => {
 
-    const { value: formValues } = await Swal.fire({
-        title: "Edit Car",
-        html: `
+            const { value: formValues } = await Swal.fire({
+                title: "Edit Car",
+                html: `
             <input id="swal-name" class="swal2-input" placeholder="Car Name" value="${oldName}">
             <input id="swal-price" class="swal2-input" placeholder="Price" value="${oldPrice}">
-            <input id="swal-image" class="swal2-input" placeholder="Image URL" value="${oldImage}">
+
+            <input id="swal-image0" class="swal2-input" placeholder="Image 1" value="${oldImages[0] || ''}">
+            <input id="swal-image1" class="swal2-input" placeholder="Image 2" value="${oldImages[1] || ''}">
+            <input id="swal-image2" class="swal2-input" placeholder="Image 3" value="${oldImages[2] || ''}">
+            <input id="swal-image3" class="swal2-input" placeholder="Image 4" value="${oldImages[3] || ''}">
+
             <textarea id="swal-desc" class="swal2-textarea" placeholder="Description">${oldDesc}</textarea>
         `,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonText: "Update",
-        preConfirm: () => {
-            return {
-                name: document.getElementById("swal-name").value,
-                price: document.getElementById("swal-price").value,
-                image: document.getElementById("swal-image").value,
-                desc: document.getElementById("swal-desc").value
-            };
-        }
-    });
+                showCancelButton: true,
+                confirmButtonText: "Update",
+                preConfirm: () => {
+                    return {
+                        name: document.getElementById("swal-name").value,
+                        price: document.getElementById("swal-price").value,
+                        images: [
+                            document.getElementById("swal-image0").value,
+                            document.getElementById("swal-image1").value,
+                            document.getElementById("swal-image2").value,
+                            document.getElementById("swal-image3").value
+                        ],
+                        desc: document.getElementById("swal-desc").value
+                    };
+                }
+            });
 
-    // ❌ If user cancels
-    if (!formValues) return;
+            if (!formValues) return;
 
-    const { name, price, image, desc } = formValues;
+            const { name, price, images, desc } = formValues;
 
-    if (!name || !price || !image) {
-        Swal.fire("Error", "Please fill all required fields", "error");
-        return;
-    }
+            if (!name || !price || !images[0]) {
+                Swal.fire("Error", "Fill required fields", "error");
+                return;
+            }
 
-    try {
-        await updateDoc(doc(db, "cars", id), {
-            name: name,
-            price: price,
-            image: [image],
-            description: desc
-        });
+            try {
+                await updateDoc(doc(db, "cars", id), {
+                    name,
+                    price,
+                    image: images,
+                    description: desc
+                });
 
-        Swal.fire("Success", "Car updated successfully!", "success");
-        loadAdminCars();
+                Swal.fire("Success", "Car updated!", "success");
+                loadAdminCars();
 
-    } catch (error) {
-        console.error(error);
-        Swal.fire("Error", "Failed to update car", "error");
-    }
-};
-
+            } catch (error) {
+                console.error(error);
+                Swal.fire("Error", "Update failed", "error");
+            }
+        };
         function showToast(message, type = "info") {
             const toastContainer = document.getElementById("toastContainer");
             const toast = document.createElement("div");
@@ -873,18 +960,23 @@
         }
 
         loadAdminCars();
-
-
     </script>
 
     <script>
-        const navHome = document.getElementById('nav_home');
-        if (navHome) {
-            navHome.addEventListener('click', (e) => {
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
                 e.preventDefault();
-                window.location.href = '../index.html';
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Logout Required",
+                    text: "You must logout before navigating to other pages",
+                    confirmButtonText: "OK"
+                });
             });
-        }
+        });
     </script>
 </body>
 

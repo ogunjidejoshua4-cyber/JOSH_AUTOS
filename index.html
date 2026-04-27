@@ -909,9 +909,10 @@
                 justify-content: center;
             }
         }
+
         #navUser {
-    display: none;
-}
+            display: none;
+        }
 
         /* Loading Animation */
         .loader {
@@ -1007,14 +1008,14 @@
     <nav id="navbar">
         <a href="#" class="logo">
             <i class="fas fa-car-side"></i>
-            LuxAuto
+            Josh_Autos
         </a>
         <ul class="nav-links">
             <li><a href="">Home</a></li>
             <li><a href="./lakens_autos/cardisplay.html">Inventory</a></li>
             <li><a href="./lakens_autos/Services.html">Services</a></li>
             <li><a href="./lakens_autos/About.html">About</a></li>
-            <li><a href="">Contact</a></li>
+            <!-- <li><a href="">Contact</a></li> -->
         </ul>
         <!-- <button onclick="viewDetails()">View Details</button> -->
 
@@ -1032,10 +1033,10 @@
             </header>
             <ul id="menu" hidden>
                 <li><a href="">Home</a></li>
-                <li><a href="">Inventory</a></li>
-                <li><a href="">Categories</a></li>
-                <li><a href="">Reviews</a></li>
-                <li><a href="">Contact</a></li>
+                <li><a href="./lakens_autos/cardisplay.html">Inventory</a></li>
+                <li><a href="./lakens_autos/Services.html">Services</a></li>
+                <li><a href="./lakens_autos/Reviews.html">Reviews</a></li>
+                <!-- <li><a href="./lakens_autos/Contact.html">Contact</a></li> -->
             </ul>
         </div>
         <div class="nav-right" id="navUser">
@@ -1288,8 +1289,8 @@
                 <h3>Contact</h3>
                 <ul class="footer-links">
                     <li><a href="#"><i class="fas fa-map-marker-alt"></i> 123 Luxury Lane, Beverly Hills, CA</a></li>
-                    <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
-                    <li><a href="#"><i class="fas fa-envelope"></i> sales@luxauto.com</a></li>
+                    <li><a href="#"><i class="fas fa-phone"></i>+234 9045 860 541</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> joshautos@luxauto.com</a></li>
                     <li><a href="#"><i class="fas fa-clock"></i> Mon-Sat: 9AM - 8PM</a></li>
                 </ul>
             </div>
@@ -1328,39 +1329,39 @@
         const loginBtn = document.getElementById("loginBtn");
 
         // 🔐 Check logged-in user
-       auth.onAuthStateChanged(async (user) => {
-    const usernameEl = document.getElementById("username");
+        auth.onAuthStateChanged(async (user) => {
+            const usernameEl = document.getElementById("username");
 
-    if (user) {
-        // ✅ Hide login button
-        navUser.style.display = "flex";
-        loginBtn.style.display = "none";
+            if (user) {
+                // ✅ Hide login button
+                navUser.style.display = "flex";
+                loginBtn.style.display = "none";
 
-        try {
-            let doc = await db.collection("admins").doc(user.uid).get();
+                try {
+                    let doc = await db.collection("admins").doc(user.uid).get();
 
-            if (!doc.exists) {
-                doc = await db.collection("users").doc(user.uid).get();
-            }
+                    if (!doc.exists) {
+                        doc = await db.collection("users").doc(user.uid).get();
+                    }
 
-            if (doc.exists) {
-                const data = doc.data();
-                usernameEl.innerText = data.firstName || "User";
+                    if (doc.exists) {
+                        const data = doc.data();
+                        usernameEl.innerText = data.firstName || "User";
+                    } else {
+                        usernameEl.innerText = user.email;
+                    }
+
+                } catch (err) {
+                    console.error(err);
+                    usernameEl.innerText = "Error";
+                }
+
             } else {
-                usernameEl.innerText = user.email;
+                // ❌ Show login button again
+                loginBtn.style.display = "block";
+                usernameEl.innerText = "Guest";
             }
-
-        } catch (err) {
-            console.error(err);
-            usernameEl.innerText = "Error";
-        }
-
-    } else {
-        // ❌ Show login button again
-        loginBtn.style.display = "block";
-        usernameEl.innerText = "Guest";
-    }
-});
+        });
 
 
         function toggleMenu() {
