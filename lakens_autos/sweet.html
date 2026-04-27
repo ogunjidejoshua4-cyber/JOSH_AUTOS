@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="showLoginChoice()">Show Alert</button>
+    <script>
+        function showLoginChoice() {
+            Swal.fire({
+                title: 'Login as?',
+                text: 'Select your role',
+                icon: 'question',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Admin',
+                denyButtonText: 'User',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Admin selected
+                    window.location.href = 'Admin_login.html';
+                } else if (result.isDenied) {
+                    // User selected
+                    window.location.href = 'User_login.html';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

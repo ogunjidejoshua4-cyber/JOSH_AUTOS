@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Services</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --primary: #1a1a1a;
+    --secondary: #0d0d0d;
+    --accent: #c9a962;
+    --accent-hover: #b8944f;
+    --text-light: #ffffff;
+    --text-muted: #a0a0a0;
+    --glass: rgba(255,255,255,0.05);
+    --border: rgba(255,255,255,0.1);
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--secondary);
+    color: var(--text-light);
+}
+
+/* NAV */
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 5%;
+    background: rgba(13,13,13,0.9);
+    position: fixed;
+    width: 100%;
+    top: 0;
+}
+
+.logo {
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+}
+
+/* HEADER */
+.header {
+    margin-top: 80px;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    color: var(--accent);
+}
+
+.header p {
+    color: var(--text-muted);
+}
+
+/* SERVICES GRID */
+.services {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap: 1.5rem;
+    padding: 2rem 5%;
+}
+
+.service-card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+}
+
+.service-icon {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.service-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.service-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* CTA */
+.cta {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.cta a {
+    background: var(--accent);
+    color: black;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.cta a:hover {
+    background: var(--accent-hover);
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">LuxAuto</div>
+    <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="./cardisplay.html">Inventory</a>
+        <a href="#" style="color:#c9a962;">Services</a>
+        <a href="./contact.html">Contact</a>
+    </div>
+</nav>
+
+<div class="header">
+    <h1>Our Premium Services</h1>
+    <p>Experience luxury beyond just buying cars</p>
+</div>
+
+<div class="services">
+
+    <div class="service-card">
+        <div class="service-icon"><i class="fas fa-car"></i></div>
+        <div class="service-title">Car Sales</div>
+        <div class="service-desc">
+            Browse and purchase top-quality luxury vehicles tailored to your taste.
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-icon"><i class="fas fa-tools"></i></div>
+        <div class="service-title">Maintenance</div>
+        <div class="service-desc">
+            Keep your car in perfect condition with our professional servicing.
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="service-title">Car Insurance</div>
+        <div class="service-desc">
+            Get reliable insurance coverage to protect your investment.
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-icon"><i class="fas fa-money-check-alt"></i></div>
+        <div class="service-title">Financing</div>
+        <div class="service-desc">
+            Flexible payment plans to make owning your dream car easy.
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-icon"><i class="fas fa-truck"></i></div>
+        <div class="service-title">Car Delivery</div>
+        <div class="service-desc">
+            We deliver your car safely to your doorstep anywhere in Nigeria.
+        </div>
+    </div>
+
+    <div class="service-card">
+        <div class="service-icon"><i class="fas fa-headset"></i></div>
+        <div class="service-title">24/7 Support</div>
+        <div class="service-desc">
+            Our team is always available to assist you anytime.
+        </div>
+    </div>
+
+</div>
+
+<div class="cta">
+    <h2>Need Help Choosing a Car?</h2>
+    <p>Chat with us instantly on WhatsApp</p>
+    <br>
+    <a href="https://wa.me/2349045860541" target="_blank">
+        <i class="fab fa-whatsapp"></i> Chat Now
+    </a>
+</div>
+
+</body>
+</html>

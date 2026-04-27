@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div id="carList"></div>
+
+
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA75tynwYg6ROH8AOjZ5LPsFUk5Ik9VyA0",
+            authDomain: "lakancarproject.firebaseapp.com",
+            projectId: "lakancarproject",
+            storageBucket: "lakancarproject.firebasestorage.app",
+            messagingSenderId: "911776744550",
+            appId: "1:911776744550:web:5ae000c99ed2f884a559a7"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const carList = document.getElementById("carList");
+
+        async function loadCars() {
+            const querySnapshot = await getDocs(collection(db, "cars"));
+
+            carList.innerHTML = ""; // clear first
+
+            querySnapshot.forEach((doc) => {
+                const car = doc.data();
+
+                carList.innerHTML += `
+      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <h2>${car.name}</h2>
+        <img src="${car.image}" width="200"/>
+        <p><strong>Price:</strong> ${car.price}</p>
+        <p><strong>Year:</strong> ${car.Year}</p>
+        <p><strong>Transmission:</strong> ${car.Transmission}</p>
+        <p><strong>Fuel Type:</strong> ${car.FuelType}</p>
+        <p><strong>Car Type:</strong> ${car.carType}</p>
+        <p>${car.description}</p>
+      </div>
+    `;
+            });
+        }
+
+        loadCars();
+    </script>
+</body>
+
+</html>

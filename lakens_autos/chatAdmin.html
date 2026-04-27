@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #0d0d0d;
+            --accent: #c9a962;
+            --accent-hover: #b8944f;
+            --text-light: #ffffff;
+            --text-muted: #a0a0a0;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --success: #22c55e;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--secondary);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(13, 13, 13, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(201, 169, 98, 0.3);
+        }
+
+        .page-header {
+            margin-top: 80px;
+            padding: 3rem 5%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+        }
+
+        .form-section {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .form-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-item input[type="checkbox"] {
+            accent-color: var(--accent);
+        }
+
+        .upload-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .upload-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201, 169, 98, 0.3);
+        }
+
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .car-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .car-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .car-image-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        }
+
+        .car-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .car-card:hover .car-image {
+            transform: scale(1.1);
+        }
+
+        .car-content {
+            padding: 1.25rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .car-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .car-title-group {
+            flex: 1;
+        }
+
+        .car-brand {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.2rem;
+        }
+
+        .car-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            line-height: 1.3;
+        }
+
+        .car-meta {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .car-price {
+            text-align: right;
+        }
+
+        .price-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .car-specs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+            padding: 0.75rem 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .spec-item i {
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .car-footer {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+
+        .btn-view {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            text-decoration: none;
+        }
+
+        .btn-view:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201, 169, 98, 0.3);
+        }
+
+        .btn-edit {
+            padding: 0.75rem;
+            background: var(--info);
+            color: var(--text-light);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            padding: 0.75rem;
+            background: var(--danger);
+            color: var(--text-light);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .form-section {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.75rem;
+            }
+
+            .cars-grid {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .car-specs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <nav>
+        <a href="#" class="logo">
+            <i class="fas fa-car-side"></i>
+            LuxAuto Admin
+        </a>
+        <ul class="nav-links">
+            <li><a href="../index.html" id="nav_home">Home</a></li>
+            <li><a href="./cardisplay.html">Inventory</a></li>
+            <li><a href="./services.html">Services</a></li>
+            <li><a href="./about.html">About</a></li>
+            <li><a href="./contact.html">Contact</a></li>
+        </ul>
+        <a href="#" class="nav-cta">Admin</a>
+    </nav>
+
+    <header class="page-header">
+        <div class="header-content">
+            <div>
+                <h1 class="header-title">Admin Dashboard</h1>
+                <p class="header-subtitle">Manage your car inventory with ease</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="form-section">
+            <h3 class="form-title">
+                <i class="fas fa-plus-circle"></i>
+                Upload New Car
+            </h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Car Name</label>
+                    <input type="text" class="form-input" id="name" placeholder="Car Name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Car Brand</label>
+                    <input type="text" class="form-input" id="Brand" placeholder="Car Brand">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price (₦)</label>
+                    <input type="text" class="form-input" id="price" placeholder="Price">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL</label>
+                    <input type="text" class="form-input" id="image" placeholder="Image URL">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL 1</label>
+                    <input type="text" class="form-input" id="image1" placeholder="Image URL 1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL 2</label>
+                    <input type="text" class="form-input" id="image2" placeholder="Image URL 2">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL 3</label>
+                    <input type="text" class="form-input" id="image3" placeholder="Image URL 3">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Year of Manufacture</label>
+                    <input type="number" class="form-input" id="Year" placeholder="Year">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Transmission</label>
+                    <input type="text" class="form-input" id="Transmission" placeholder="Automatic / Manual">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fuel Type</label>
+                    <input type="text" class="form-input" id="FuelType"
+                        placeholder="Petrol / Diesel / Electric / Hybrid">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Car Type</label>
+                    <select class="form-select" id="carType">
+                        <option>Sedan</option>
+                        <option>SUV</option>
+                        <option>Truck</option>
+                        <option>Sports</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="desc" placeholder="Description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Car Features</label>
+                    <div class="features-grid">
+                        <label class="feature-item">
+                            <input type="checkbox" value="Air Conditioning"> Air Conditioning
+                        </label>
+                        <label class="feature-item">
+                            <input type="checkbox" value="Bluetooth"> Bluetooth
+                        </label>
+                        <label class="feature-item">
+                            <input type="checkbox" value="GPS"> GPS
+                        </label>
+                        <label class="feature-item">
+                            <input type="checkbox" value="Sunroof"> Sunroof
+                        </label>
+                        <label class="feature-item">
+                            <input type="checkbox" value="Reverse Camera"> Reverse Camera
+                        </label>
+                        <label class="feature-item">
+                            <input type="checkbox" value="Leather Seats"> Leather Seats
+                        </label>
+                        <label class="feature-item">
+                            <input type="checkbox" value="Parking Sensors"> Parking Sensors
+                        </label>
+                        <label class="feature-item">
+                            <input type="checkbox" value="Cruise Control"> Cruise Control
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button class="upload-btn" id="uploadBtn">
+                <i class="fas fa-upload"></i>
+                Upload Car
+            </button>
+        </aside>
+
+        <main class="content-area">
+            <div class="cars-grid" id="adminCarList"></div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        // import { getDoc, doc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA75tynwYg6ROH8AOjZ5LPsFUk5Ik9VyA0",
+            authDomain: "lakancarproject.firebaseapp.com",
+            projectId: "lakancarproject",
+            storageBucket: "lakancarproject.firebasestorage.app",
+            messagingSenderId: "911776744550",
+            appId: "1:911776744550:web:5ae000c99ed2f884a559a7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                // Not logged in
+                window.location.href = "./Admin_login.html";
+                return;
+            }
+
+            try {
+                const adminRef = doc(db, "admins", user.uid);
+                const adminSnap = await getDoc(adminRef);
+
+                if (!adminSnap.exists()) {
+                    // Logged in BUT not admin
+                    alert("You are not authorized to access admin dashboard");
+                    window.location.href = "../index.html";
+                    return;
+                }
+
+                // ✅ This is a real admin
+                loadAdminCars();
+
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+
+        const uploadBtn = document.getElementById("uploadBtn");
+
+        uploadBtn.addEventListener("click", async () => {
+            const brand = document.getElementById("Brand").value;
+            const name = document.getElementById("name").value;
+            const price = document.getElementById("price").value;
+            const image = document.getElementById("image").value;
+            const image1 = document.getElementById("image1").value;
+            const image2 = document.getElementById("image2").value;
+            const image3 = document.getElementById("image3").value;
+            const carYear = document.getElementById("Year").value;
+            const transmission = document.getElementById("Transmission").value;
+            const fuelType = document.getElementById("FuelType").value;
+            const carType = document.getElementById("carType").value;
+            const desc = document.getElementById("desc").value;
+
+            if (!name || !price || !image || !image1 || !image2 || !image3 || !carYear || !transmission || !fuelType || !carType || !desc) {
+                showToast("Please fill all fields", "error");
+                return;
+            }
+
+            const features = [];
+            document.querySelectorAll('.features-grid input:checked').forEach(box => features.push(box.value));
+
+            try {
+                await addDoc(collection(db, "cars"), {
+                    brand: brand,
+                    name: name,
+                    price: price,
+                    image: [image, image1, image2, image3],
+                    Year: carYear,
+                    Transmission: transmission,
+                    FuelType: fuelType,
+                    carType: carType,
+                    description: desc,
+                    features: features,
+                    createdAt: new Date()
+                });
+
+                showToast("Car uploaded successfully!", "success");
+
+                // Clear form
+                document.getElementById("Brand").value = "";
+                document.getElementById("name").value = "";
+                document.getElementById("price").value = "";
+                document.getElementById("image").value = "";
+                document.getElementById("image1").value = "";
+                document.getElementById("image2").value = "";
+                document.getElementById("image3").value = "";
+                document.getElementById("Year").value = "";
+                document.getElementById("Transmission").value = "";
+                document.getElementById("FuelType").value = "";
+                document.getElementById("carType").value = "Sedan";
+                document.getElementById("desc").value = "";
+                document.querySelectorAll('.features-grid input').forEach(box => box.checked = false);
+
+                loadAdminCars();
+            } catch (error) {
+                console.error(error);
+                showToast("Error uploading car", "error");
+            }
+        });
+
+        const adminCarList = document.getElementById("adminCarList");
+
+        async function loadAdminCars() {
+            const querySnapshot = await getDocs(collection(db, "cars"));
+            adminCarList.innerHTML = "";
+
+            querySnapshot.forEach((docSnap) => {
+                const car = docSnap.data();
+                const id = docSnap.id;
+
+                adminCarList.innerHTML += `
+                    <div class="car-card">
+                        <div class="car-image-container">
+                            <img src="${car.image[0]}" class="car-image" alt="${car.name || 'Car'}">
+                        </div>
+                        <div class="car-content">
+                            <div class="car-header">
+                                <div class="car-title-group">
+                                    <div class="car-brand">${car.carType || "Brand"}</div>
+                                    <div class="car-name">${car.name || "Unknown model"}</div>
+                                    <div class="car-meta">${car.Year || ""}</div>
+                                </div>
+                                <div class="car-price">
+                                    <div class="price-amount">₦${car.price || "0"}</div>
+                                </div>
+                            </div>
+                            <div class="car-specs">
+                                <div class="spec-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>${car.Year || "N/A"}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-cog"></i>
+                                    <span>${car.Transmission || "N/A"}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-gas-pump"></i>
+                                    <span>${car.FuelType || "N/A"}</span>
+                                </div>
+                            </div>
+                            <div class="car-footer">
+                                <button class="btn-view">
+                                    <i class="fas fa-eye"></i>
+                                    View Details
+                                </button>
+                                <button class="btn-edit" onclick="editCar('${id}', '${car.name}', '${car.price}', '${car.image[0]}', '${car.description}')">
+                                    Edit
+                                </button>
+                                <button class="btn-delete" onclick="deleteCar('${id}')">
+                                    <i class="fas fa-trash"></i>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.deleteCar = async (id) => {
+            const confirmDelete = confirm("Are you sure you want to delete this car?");
+
+            if (!confirmDelete) return;
+
+            try {
+                await deleteDoc(doc(db, "cars", id));
+                showToast("Car deleted successfully!", "success");
+                loadAdminCars();
+            } catch (error) {
+                console.error(error);
+                showToast("Error deleting car", "error");
+            }
+        };
+
+        window.editCar = async (id, oldName, oldPrice, oldImage, oldDesc) => {
+
+    const { value: formValues } = await Swal.fire({
+        title: "Edit Car",
+        html: `
+            <input id="swal-name" class="swal2-input" placeholder="Car Name" value="${oldName}">
+            <input id="swal-price" class="swal2-input" placeholder="Price" value="${oldPrice}">
+            <input id="swal-image" class="swal2-input" placeholder="Image URL" value="${oldImage}">
+            <textarea id="swal-desc" class="swal2-textarea" placeholder="Description">${oldDesc}</textarea>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: "Update",
+        preConfirm: () => {
+            return {
+                name: document.getElementById("swal-name").value,
+                price: document.getElementById("swal-price").value,
+                image: document.getElementById("swal-image").value,
+                desc: document.getElementById("swal-desc").value
+            };
+        }
+    });
+
+    // ❌ If user cancels
+    if (!formValues) return;
+
+    const { name, price, image, desc } = formValues;
+
+    if (!name || !price || !image) {
+        Swal.fire("Error", "Please fill all required fields", "error");
+        return;
+    }
+
+    try {
+        await updateDoc(doc(db, "cars", id), {
+            name: name,
+            price: price,
+            image: [image],
+            description: desc
+        });
+
+        Swal.fire("Success", "Car updated successfully!", "success");
+        loadAdminCars();
+
+    } catch (error) {
+        console.error(error);
+        Swal.fire("Error", "Failed to update car", "error");
+    }
+};
+
+        function showToast(message, type = "info") {
+            const toastContainer = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+            toast.className = "toast";
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.classList.add("show"), 100);
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        loadAdminCars();
+
+
+    </script>
+
+    <script>
+        const navHome = document.getElementById('nav_home');
+        if (navHome) {
+            navHome.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '../index.html';
+            });
+        }
+    </script>
+</body>
+
+</html>

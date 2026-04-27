@@ -1,0 +1,1212 @@
+<!-- filepath: c:\Users\Administrator\Desktop\first project\lakens_autos\cardisplay.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Inventory</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #0d0d0d;
+            --accent: #c9a962;
+            --accent-hover: #b8944f;
+            --text-light: #ffffff;
+            --text-muted: #a0a0a0;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --success: #22c55e;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--secondary);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(13, 13, 13, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(201, 169, 98, 0.3);
+        }
+
+        .page-header {
+            margin-top: 80px;
+            padding: 3rem 5%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .results-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        .results-count {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .loading-indicator {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .filters-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--glass);
+        }
+
+        .filters-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .filters-sidebar::-webkit-scrollbar-track {
+            background: var(--glass);
+            border-radius: 3px;
+        }
+
+        .filters-sidebar::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .filter-section {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .price-range {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .price-input {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .price-input:focus {
+            border-color: var(--accent);
+        }
+
+        .price-range span {
+            color: var(--text-muted);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .checkbox-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+        }
+
+        .clear-filters {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-light);
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .clear-filters:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .toolbar-left input {
+            width: 250px;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            outline: none;
+        }
+
+        .sort-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sort-section option {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sort-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .sort-select {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .sort-select option {
+            background: var(--secondary);
+            color: var(--text-light);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .view-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .view-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .view-btn.active {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+        }
+
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .cars-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .car-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .car-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .cars-grid.list-view .car-card {
+            flex-direction: row;
+        }
+
+        .cars-grid.list-view .car-image-container {
+            width: 35%;
+            min-height: 220px;
+        }
+
+        .cars-grid.list-view .car-content {
+            width: 65%;
+            justify-content: center;
+        }
+
+        .car-image-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        }
+
+        .car-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .car-card:hover .car-image {
+            transform: scale(1.1);
+        }
+
+        .quick-actions {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.3s ease;
+        }
+
+        .car-card:hover .quick-actions {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .quick-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .quick-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .car-content {
+            padding: 1.25rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .car-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .car-title-group {
+            flex: 1;
+        }
+
+        .car-brand {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.2rem;
+        }
+
+        .car-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            line-height: 1.3;
+        }
+
+        .car-meta {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .car-price {
+            text-align: right;
+        }
+
+        .price-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .price-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        .car-specs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+            padding: 0.75rem 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .spec-item i {
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .car-footer {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+
+        .btn-view {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            text-decoration: none;
+        }
+
+        .btn-view:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201, 169, 98, 0.3);
+        }
+
+        .btn-compare {
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-compare:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-compare.active {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            margin-top: 2rem;
+            padding: 1rem;
+        }
+
+        .page-btn {
+            min-width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .page-btn.active {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--border);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            font-size: 1.1rem;
+        }
+
+        .mobile-filter-toggle {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(201, 169, 98, 0.4);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 998;
+            backdrop-filter: blur(4px);
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 85%;
+                max-width: 360px;
+                height: 100vh;
+                background: var(--secondary);
+                z-index: 999;
+                overflow-y: auto;
+                padding: 2rem;
+                transition: left 0.3s ease;
+                border-right: 1px solid var(--border);
+                max-height: 100vh;
+            }
+
+            .filters-sidebar.active {
+                left: 0;
+            }
+
+            .mobile-filter-toggle {
+                display: flex;
+            }
+
+            .cars-grid {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.75rem;
+            }
+
+            .results-info {
+                align-items: flex-start;
+            }
+
+            .cars-grid.list-view .car-card {
+                flex-direction: column;
+            }
+
+            .cars-grid.list-view .car-image-container,
+            .cars-grid.list-view .car-content {
+                width: 100%;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .car-specs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+    <div class="overlay" id="overlay" onclick="toggleMobileFilters()"></div>
+
+    <nav>
+        <a href="#" class="logo">
+            <i class="fas fa-car-side"></i>
+            LuxAuto
+        </a>
+        <ul class="nav-links">
+            <li><a href="../index.html" id="nav_home">Home</a></li>
+            <li><a href="#" class="active">Inventory</a></li>
+            <li><a href="./services.html">Services</a></li>
+            <li><a href="./about.html">About</a></li>
+            <li><a href="./contact.html">Contact</a></li>
+        </ul>
+        <a href="#" class="nav-cta"></a>
+    </nav>
+
+    <header class="page-header">
+        <div class="header-content">
+            <div>
+                <h1 class="header-title">Premium Inventory</h1>
+                <p class="header-subtitle">Discover exceptional vehicles curated for discerning drivers</p>
+            </div>
+            <div class="results-info">
+                <div class="results-count" id="resultsCount">Loading inventory...</div>
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <span>Updating results...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="filters-sidebar" id="filtersSidebar">
+            <div class="filter-section">
+                <h3 class="filter-title">
+                    <i class="fas fa-dollar-sign"></i>
+                    Price Range
+                </h3>
+                <div class="filter-group">
+                    <div class="price-range">
+                        <input type="number" class="price-input" placeholder="Min ₦" id="minPrice"
+                            onchange="applyFilters()">
+                        <span>-</span>
+                        <input type="number" class="price-input" placeholder="Max ₦" id="maxPrice"
+                            onchange="applyFilters()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="filter-title">
+                    <i class="fas fa-tag"></i>
+                    Brand
+                </h3>
+                <div class="checkbox-group" id="brandFilters"></div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="filter-title">
+                    <i class="fas fa-gas-pump"></i>
+                    Fuel Type
+                </h3>
+                <div class="checkbox-group" id="fuelFilters"></div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="filter-title">
+                    <i class="fas fa-cog"></i>
+                    Transmission
+                </h3>
+                <div class="checkbox-group" id="transmissionFilters"></div>
+            </div>
+
+            <button class="clear-filters" onclick="clearAllFilters()">
+                <i class="fas fa-undo"></i>
+                Reset All Filters
+            </button>
+        </aside>
+
+        <main class="content-area">
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <input type="text" id="searchInput" placeholder="Search cars..." oninput="applyFilters()">
+                </div>
+                <div class="sort-section">
+                    <span class="sort-label">Sort by:</span>
+                    <select class="sort-select" id="sortSelect" onchange="sortCars()">
+                        <option value="newest">Newest Arrivals</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="name-asc">Name: A-Z</option>
+                        <option value="name-desc">Name: Z-A</option>
+                    </select>
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="toggleView('grid')" id="gridBtn" title="Grid View">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-btn" onclick="toggleView('list')" id="listBtn" title="List View">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="cars-grid" id="carsGrid"></div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3>No vehicles found</h3>
+                <p>Try adjusting your filters to see more results</p>
+            </div>
+
+            <div class="pagination" id="pagination"></div>
+        </main>
+    </div>
+
+    <button class="mobile-filter-toggle" onclick="toggleMobileFilters()">
+        <i class="fas fa-filter"></i>
+    </button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA75tynwYg6ROH8AOjZ5LPsFUk5Ik9VyA0",
+            authDomain: "lakancarproject.firebaseapp.com",
+            projectId: "lakancarproject",
+            storageBucket: "lakancarproject.firebasestorage.app",
+            messagingSenderId: "911776744550",
+            appId: "1:911776744550:web:5ae000c99ed2f884a559a7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const carsGrid = document.getElementById("carsGrid");
+        const resultsCount = document.getElementById("resultsCount");
+        const loadingIndicator = document.getElementById("loadingIndicator");
+        const emptyState = document.getElementById("emptyState");
+        const searchInput = document.getElementById("searchInput");
+        const sortSelect = document.getElementById("sortSelect");
+        const brandFilters = document.getElementById("brandFilters");
+        const fuelFilters = document.getElementById("fuelFilters");
+        const transmissionFilters = document.getElementById("transmissionFilters");
+        const filtersSidebar = document.getElementById("filtersSidebar");
+        const overlay = document.getElementById("overlay");
+
+        let allCars = [];
+        let filteredCars = [];
+        let currentView = "grid";
+
+        async function loadCars() {
+            showLoading(true);
+            const snapshot = await getDocs(collection(db, "cars"));
+            allCars = [];
+            snapshot.forEach(doc => {
+                allCars.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            filteredCars = [...allCars];
+            buildFilters();
+            applyFilters();
+            showLoading(false);
+        }
+
+        function showLoading(active) {
+            loadingIndicator.classList.toggle("active", active);
+        }
+
+        function buildFilters() {
+            const brands = [...new Set(allCars.map(car => car.carType).filter(Boolean))].sort();
+            const fuels = [...new Set(allCars.map(car => car.FuelType).filter(Boolean))].sort();
+            const transmissions = [...new Set(allCars.map(car => car.Transmission).filter(Boolean))].sort();
+
+            brandFilters.innerHTML = buildCheckboxList(brands, "brand");
+            fuelFilters.innerHTML = buildCheckboxList(fuels, "fuel");
+            transmissionFilters.innerHTML = buildCheckboxList(transmissions, "transmission");
+        }
+
+        function buildCheckboxList(items, name) {
+            return items.map(item => `
+                <label class="checkbox-item">
+                    <input type="checkbox" name="${name}" value="${item}" onchange="applyFilters()">
+                    <span class="checkbox-label">${item}</span>
+                </label>
+            `).join("");
+        }
+
+        function getCheckedValues(name) {
+            return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+        }
+
+        function applyFilters() {
+            const searchValue = searchInput.value.trim().toLowerCase();
+            const minPrice = parseFloat(document.getElementById("minPrice").value);
+            const maxPrice = parseFloat(document.getElementById("maxPrice").value);
+            const selectedBrands = getCheckedValues("brand");
+            const selectedFuels = getCheckedValues("fuel");
+            const selectedTransmissions = getCheckedValues("transmission");
+
+            filteredCars = allCars.filter(car => {
+                const matchesSearch = !searchValue ||
+                    car.name?.toLowerCase().includes(searchValue) ||
+                    car.carType?.toLowerCase().includes(searchValue);
+
+                const priceValue = parseFloat(car.price) || 0;
+                const matchesMinPrice = isNaN(minPrice) || priceValue >= minPrice;
+                const matchesMaxPrice = isNaN(maxPrice) || priceValue <= maxPrice;
+
+                const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(car.carType);
+                const matchesFuel = selectedFuels.length === 0 || selectedFuels.includes(car.FuelType);
+                const matchesTransmission = selectedTransmissions.length === 0 || selectedTransmissions.includes(car.Transmission);
+
+                return matchesSearch && matchesMinPrice && matchesMaxPrice && matchesBrand && matchesFuel && matchesTransmission;
+            });
+
+            sortCars(false);
+            displayCars(filteredCars);
+        }
+
+        function sortCars(shouldRender = true) {
+            const option = sortSelect.value;
+            filteredCars.sort((a, b) => {
+                if (option === "price-asc") {
+                    return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
+                }
+                if (option === "price-desc") {
+                    return (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0);
+                }
+                if (option === "name-asc") {
+                    return (a.name || "").localeCompare(b.name || "");
+                }
+                if (option === "name-desc") {
+                    return (b.name || "").localeCompare(a.name || "");
+                }
+                return 0;
+            });
+            if (shouldRender) displayCars(filteredCars);
+        }
+
+        function displayCars(cars) {
+            carsGrid.innerHTML = "";
+            if (cars.length === 0) {
+                emptyState.style.display = "block";
+                resultsCount.textContent = "0 cars found";
+                return;
+            }
+            emptyState.style.display = "none";
+            resultsCount.textContent = `${cars.length} cars found`;
+
+            cars.forEach(car => {
+                carsGrid.innerHTML += `
+                    <div class="car-card">
+                        <div class="car-image-container">
+                            <img src="${car.image?.[0] || 'https://via.placeholder.com/400x240?text=No+Image'}" class="car-image" alt="${car.name || 'Car'}">
+                            <div class="quick-actions">
+                                <button class="quick-btn" title="Save">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                                <button class="quick-btn" title="Share">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="car-content">
+                            <div class="car-header">
+                                <div class="car-title-group">
+                                    <div class="car-brand">${car.carType || "Brand"}</div>
+                                    <div class="car-name">${car.name || "Unknown model"}</div>
+                                    <div class="car-meta">${car.Year || ""}</div>
+                                </div>
+                                <div class="car-price">
+                                    <div class="price-amount">${car.price || "0"}</div>
+                                    <div class="price-time">Total Price</div>
+                                </div>
+                            </div>
+                            <div class="car-specs">
+                                <div class="spec-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>${car.Year || "N/A"}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-cog"></i>
+                                    <span>${car.Transmission || "N/A"}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-gas-pump"></i>
+                                    <span>${car.FuelType || "N/A"}</span>
+                                </div>
+                            </div>
+                            <div class="car-footer">
+                                <a href="#" onclick="viewCar('${car.id}')">
+                                    <button class="btn-view">
+                                    <i class="fas fa-eye"></i>
+                                    View Details
+                                </button></a>
+                                <button class="btn-compare">
+                                    <i class="fas fa-balance-scale"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            window.viewCar = (id) => {
+                localStorage.setItem("selectedCarId", id);
+                window.location.href = "car-details.html";
+            };
+
+
+            carsGrid.classList.toggle("list-view", currentView === "list");
+        }
+
+        function clearAllFilters() {
+            document.getElementById("searchInput").value = "";
+            document.getElementById("minPrice").value = "";
+            document.getElementById("maxPrice").value = "";
+            document.querySelectorAll('.filters-sidebar input[type="checkbox"]').forEach(el => el.checked = false);
+            sortSelect.value = "newest";
+            applyFilters();
+        }
+
+        function toggleView(view) {
+            currentView = view;
+            document.getElementById("gridBtn").classList.toggle("active", view === "grid");
+            document.getElementById("listBtn").classList.toggle("active", view === "list");
+            carsGrid.classList.toggle("list-view", view === "list");
+        }
+
+        function toggleMobileFilters() {
+            filtersSidebar.classList.toggle("active");
+            overlay.classList.toggle("active");
+        }
+
+        window.toggleMobileFilters = toggleMobileFilters;
+        window.applyFilters = applyFilters;
+        window.sortCars = () => sortCars(true);
+
+        loadCars();
+    </script>
+
+    <script>
+        const navHome = document.getElementById('nav_home');
+        navHome.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+
+</html>
